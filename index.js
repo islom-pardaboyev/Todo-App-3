@@ -1,13 +1,16 @@
 "use strict";
+
 // Variables
 const elForm = document.querySelector(".form");
 const elInput = document.querySelector(".input");
 const elList = document.querySelector(".todos-list");
+const elCompleted = document.querySelector("#Completed");
+const elUncompleted = document.querySelector("#Uncompleted");
 
 // Arrays
 const todos = [];
 const completed = [];
-const uncomppleted = [];
+const uncompleted = [];
 
 // Functions
 const renderTodos = function (arr, htmlElement) {
@@ -20,23 +23,16 @@ const renderTodos = function (arr, htmlElement) {
     const newDeleteBtn = document.createElement("button");
 
     newCheckBox.type = "checkbox";
-    newP.innerHTML = todo.title;
+    newP.textContent = todo.title; 
 
     // ClassName
-    newDeleteBtn.setAttribute(
-      "class",
-      "fa-solid fa-xmark delete-btn rounded-md px-[10px] py-[10px] bg-[red] text-[white]"
-    );
-    newCheckBox.setAttribute(
-      "class",
-      "checkbox-btn w-[30px] h-[30px] mr-[1rem]"
-    );
-    newDiv.setAttribute("class", "flex flex-row-reverse");
-    newLi.setAttribute(
-      "class",
-      "flex bg-[white] items-center px-[15px] py-[10px] mt-[10px] text-[black] rounded-md justify-between"
-    );
-    newP.setAttribute("class", "text-[20px]");
+    newDeleteBtn.className =
+      "fa-solid fa-xmark delete-btn rounded-md px-[10px] py-[10px] bg-[red] text-[white]";
+    newCheckBox.className = "checkbox-btn w-[30px] h-[30px] mr-[1rem]";
+    newDiv.className = "flex flex-row-reverse";
+    newLi.className =
+      "flex bg-[white] items-center px-[15px] py-[10px] mt-[10px] text-[black] rounded-md justify-between";
+    newP.className = "text-[20px]";
 
     // DataSet
     newDeleteBtn.dataset.deleteBtnId = todo.id;
@@ -54,38 +50,24 @@ const renderTodos = function (arr, htmlElement) {
   });
 };
 
-// DOM
-elList.addEventListener("click", (e) => {
-  const deleteBtnId = e.target.dataset.deleteBtnId * 1;
-  const foundTodoIndex = todos.findIndex((todo) => todo.id === deleteBtnId);
-
-  if (e.target.matches(".delete-btn")) {
-    todos.splice(foundTodoIndex, 1);
-    elList.innerHTML = null;
-    renderTodos(todos, elList);
-  } else if (e.target.matches(".checkbox-btn")) {
-    const checkboxBtnId = e.target.dataset.checkboxBtnId * 1;
-    const foundTodo = todos.find((todo) => todo.id === checkboxBtnId);
-    foundTodo.isCompleted = !foundTodo.isCompleted;
-    renderTodos(todos, elList);
-  }
-});
-
 elForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const inputValue = elInput.value;
+  const inputValue = elInput.value.trim();
+
+  if (!inputValue) return;
 
   const newTodoObj = {
-    id: todos[todos.length - 1]?.id + 1 || 0,
+    id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 0,
     title: inputValue,
     isCompleted: false,
   };
 
   todos.push(newTodoObj);
 
-  elInput.value = null;
+  elInput.value = "";
   renderTodos(todos, elList);
+  saveToLocalStorage(todos);
 });
 
 // Save to local storage
@@ -101,19 +83,47 @@ function loadFromLocalStorage() {
   }
   return [];
 }
-todos.push(...loadFromLocalStorage());
 
-renderTodos(todos, elList);
-
+// DOM
 elList.addEventListener("click", (e) => {
-  saveToLocalStorage(todos);
+  const deleteBtnId = e.target.dataset.deleteBtnId * 1;
+  const foundTodoIndex = todos.findIndex((todo) => todo.id === deleteBtnId);
+
+  if (e.target.matches(".delete-btn")) {
+    todos.splice(foundTodoIndex, 1);
+    renderTodos(todos, elList);
+    saveToLocalStorage(todos);
+  } else if (e.target.matches(".checkbox-btn")) {
+    const checkboxBtnId = e.target.dataset.checkboxBtnId * 1;
+    const foundTodo = todos.find((todo) => todo.id === checkboxBtnId);
+    foundTodo.isCompleted = !foundTodo.isCompleted;
+
+    updateCompletedAndUncompletedArrays(todos);
+
+    renderTodos(todos, elList);
+    saveToLocalStorage(todos); 
+  }
 });
 
-elForm.addEventListener("submit", (e) => {
-  saveToLocalStorage(todos);
-});
+function updateCompletedAndUncompletedArrays(todos) {
+  completed.length = 0;
+  uncompleted.length = 0;
 
+  todos.forEach((todo) => {
+    if (todo.isCompleted) {
+      completed.push(todo.title);
+    } else {
+      uncompleted.push(todo.title); 
+    }
+  });
 
+  elCompleted.innerHTML = completed;
+  elUncompleted.innerHTML = uncompleted;
+}
+
+// Initial rendering and loading from local storage
+todos.push(...loadFromLocalStorage());
+renderTodos(todos, elList);
 
 function openCity(evt, cityName) {
   var i, tabcontent, tablinks;
