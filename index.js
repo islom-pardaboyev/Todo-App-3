@@ -6,6 +6,8 @@ const elList = document.querySelector(".todos-list");
 
 // Arrays
 const todos = [];
+const completed = [];
+const uncomppleted = [];
 
 // Functions
 const renderTodos = function (arr, htmlElement) {
@@ -74,13 +76,13 @@ elForm.addEventListener("submit", (e) => {
 
   const inputValue = elInput.value;
 
-  const newTodo = {
+  const newTodoObj = {
     id: todos[todos.length - 1]?.id + 1 || 0,
     title: inputValue,
     isCompleted: false,
   };
 
-  todos.push(newTodo);
+  todos.push(newTodoObj);
 
   elInput.value = null;
   renderTodos(todos, elList);
