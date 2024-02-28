@@ -7,7 +7,7 @@ const elList = document.querySelector(".todos-list");
 // Arrays
 const todos = [];
 
-// Render Todos function
+// Functions
 const renderTodos = function (arr, htmlElement) {
   htmlElement.innerHTML = "";
   arr.forEach((todo) => {
@@ -19,8 +19,6 @@ const renderTodos = function (arr, htmlElement) {
 
     newCheckBox.type = "checkbox";
     newP.innerHTML = todo.title;
-
-    document.querySelector(".all").textContent = `All(${todos.length})`;
 
     // ClassName
     newDeleteBtn.setAttribute(
@@ -58,8 +56,6 @@ const renderTodos = function (arr, htmlElement) {
 elList.addEventListener("click", (e) => {
   const deleteBtnId = e.target.dataset.deleteBtnId * 1;
   const foundTodoIndex = todos.findIndex((todo) => todo.id === deleteBtnId);
-
-  document.querySelector(".all").textContent = todos.length;
 
   if (e.target.matches(".delete-btn")) {
     todos.splice(foundTodoIndex, 1);
@@ -105,7 +101,6 @@ function loadFromLocalStorage() {
 }
 todos.push(...loadFromLocalStorage());
 
-
 renderTodos(todos, elList);
 
 elList.addEventListener("click", (e) => {
@@ -115,3 +110,19 @@ elList.addEventListener("click", (e) => {
 elForm.addEventListener("submit", (e) => {
   saveToLocalStorage(todos);
 });
+
+
+
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
