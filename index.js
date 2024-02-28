@@ -90,28 +90,28 @@ elForm.addEventListener("submit", (e) => {
   renderTodos(todos, elList);
 });
 
-// // Save to local storage
-// function saveToLocalStorage(todos) {
-//   localStorage.setItem("todos", JSON.stringify(todos));
-// }
+// Save to local storage
+function saveToLocalStorage(todos) {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
 
-// // Load from local storage
-// function loadFromLocalStorage() {
-//   const savedTodos = localStorage.getItem("todos");
-//   if (savedTodos) {
-//     return JSON.parse(savedTodos);
-//   }
-//   return [];
-// }
-// todos.push(...loadFromLocalStorage());
+// Load from local storage
+function loadFromLocalStorage() {
+  const savedTodos = localStorage.getItem("todos");
+  if (savedTodos) {
+    return JSON.parse(savedTodos);
+  }
+  return [];
+}
+todos.push(...loadFromLocalStorage());
 
 
-// renderTodos(todos, elList);
+renderTodos(todos, elList);
 
-// elList.addEventListener("click", (e) => {
-//   saveToLocalStorage(todos);
-// });
+elList.addEventListener("click", (e) => {
+  saveToLocalStorage(todos);
+});
 
-// elForm.addEventListener("submit", (e) => {
-//   saveToLocalStorage(todos);
-// });
+elForm.addEventListener("submit", (e) => {
+  saveToLocalStorage(todos);
+});
