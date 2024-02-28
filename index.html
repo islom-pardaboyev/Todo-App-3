@@ -5,24 +5,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todo App</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
-<body>
+<body class="bg-[#35374B] text-[white] flex items-center justify-center h-[100vh] w-[100%]">
 
   <main>
     <section>
-      <div class="container">
-        <form action="" class="form">
-          <div>
-            <input type="text" class="input" placeholder="Type something..." required>
+      <div class="border-2 p-5 rounded-md">
+        <form action="" class="form gap-[1rem] flex w-[30rem]">
+          <div class="w-[100%]">
+            <input type="text" class="input w-[100%] rounded-md text-[black] px-[1rem] py-[.5rem]"
+              placeholder="Type something..." required>
           </div>
-          <button>Add</button>
+          <button class="w-[4rem] bg-[white] text-[black] rounded-md">Add</button>
         </form>
-        <ul class="todos-list"></ul>
+        <div class="flex font-bold my-[1rem] justify-between">
+          <button class="bg-[white] all text-[black] px-[15px] rounded-sm">All</button>
+          <button class="bg-[white] text-[black] px-[15px] rounded-sm">Completed</button>
+          <button class="bg-[white] text-[black] px-[15px] rounded-sm">Uncompleted</button>
+        </div>
+        <ul class="todos-list h-[10rem] border-t-2 overflow-scroll"></ul>
       </div>
     </section>
   </main>
 
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="/index.js"></script>
 </body>
 

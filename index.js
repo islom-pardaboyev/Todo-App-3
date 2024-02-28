@@ -12,16 +12,31 @@ const renderTodos = function (arr, htmlElement) {
   htmlElement.innerHTML = "";
   arr.forEach((todo) => {
     const newLi = document.createElement("li");
+    const newP = document.createElement("p");
+    const newDiv = document.createElement("div");
     const newCheckBox = document.createElement("input");
     const newDeleteBtn = document.createElement("button");
 
     newCheckBox.type = "checkbox";
-    newDeleteBtn.textContent = "Delete";
-    newLi.innerHTML = todo.title;
+    newP.innerHTML = todo.title;
+
+    document.querySelector(".all").textContent = `All(${todos.length})`;
 
     // ClassName
-    newDeleteBtn.classList.add("delete-btn");
-    newCheckBox.classList.add("checkbox-btn");
+    newDeleteBtn.setAttribute(
+      "class",
+      "fa-solid fa-xmark delete-btn rounded-md px-[10px] py-[10px] bg-[red] text-[white]"
+    );
+    newCheckBox.setAttribute(
+      "class",
+      "checkbox-btn w-[30px] h-[30px] mr-[1rem]"
+    );
+    newDiv.setAttribute("class", "flex flex-row-reverse");
+    newLi.setAttribute(
+      "class",
+      "flex bg-[white] items-center px-[15px] py-[10px] mt-[10px] text-[black] rounded-md justify-between"
+    );
+    newP.setAttribute("class", "text-[20px]");
 
     // DataSet
     newDeleteBtn.dataset.deleteBtnId = todo.id;
@@ -29,14 +44,13 @@ const renderTodos = function (arr, htmlElement) {
 
     if (todo.isCompleted) {
       newCheckBox.checked = true;
-      newLi.style.textDecoration = "line-through";
-      newLi.style.color = "gray";
+      newP.classList.add("text-[gray]", "line-through");
     }
 
     // Appends
     htmlElement.appendChild(newLi);
-    newLi.appendChild(newCheckBox);
-    newLi.appendChild(newDeleteBtn);
+    newLi.append(newDiv, newDeleteBtn);
+    newDiv.append(newP, newCheckBox);
   });
 };
 
@@ -44,6 +58,8 @@ const renderTodos = function (arr, htmlElement) {
 elList.addEventListener("click", (e) => {
   const deleteBtnId = e.target.dataset.deleteBtnId * 1;
   const foundTodoIndex = todos.findIndex((todo) => todo.id === deleteBtnId);
+
+  document.querySelector(".all").textContent = todos.length;
 
   if (e.target.matches(".delete-btn")) {
     todos.splice(foundTodoIndex, 1);
@@ -73,3 +89,29 @@ elForm.addEventListener("submit", (e) => {
   elInput.value = null;
   renderTodos(todos, elList);
 });
+
+// // Save to local storage
+// function saveToLocalStorage(todos) {
+//   localStorage.setItem("todos", JSON.stringify(todos));
+// }
+
+// // Load from local storage
+// function loadFromLocalStorage() {
+//   const savedTodos = localStorage.getItem("todos");
+//   if (savedTodos) {
+//     return JSON.parse(savedTodos);
+//   }
+//   return [];
+// }
+// todos.push(...loadFromLocalStorage());
+
+
+// renderTodos(todos, elList);
+
+// elList.addEventListener("click", (e) => {
+//   saveToLocalStorage(todos);
+// });
+
+// elForm.addEventListener("submit", (e) => {
+//   saveToLocalStorage(todos);
+// });
