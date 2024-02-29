@@ -1,142 +1,68 @@
 "use strict";
 
-// Elements
 const elForm = document.querySelector(".form");
 const elInput = document.querySelector(".input");
-const elList = document.querySelector(".todos-list");
-const elCompletedBtn = document.querySelector("#Completed");
-const elUncompleted = document.querySelector("#Uncompleted");
-const elCompletedText = document.querySelector(".completed");
-const elUncompletedText = document.querySelector(".uncompleted");
+const elList = document.querySelector(".list");
+const elStatusInput = document.querySelector(".statusInput");
 
 // Arrays
-let todos = [];
-let completed = [];
-let uncompleted = [];
+const todoArr = [];
 
-// Functions
-function renderTodos(arr, htmlElement) {
-  htmlElement.innerHTML = "";
-  arr.forEach((todo) => {
-    const newLi = document.createElement("li");
-    const newP = document.createElement("p");
-    const newDiv = document.createElement("div");
-    const newCheckBox = document.createElement("input");
-    const newDeleteBtn = document.createElement("button");
+elList.addEventListener("click", (evt) => {
+  const deleteBtnId = evt.target.dataset.deleteBtnId;
+  if (evt.target.matches(".delete-btn")) {
+    console.log(evt.target.dataset);
+  }
+});
 
-    newCheckBox.type = "checkbox";
-    newP.textContent = todo.title;
+elForm.addEventListener("submit", (evt) => {
+  evt.preventDefault();
 
-    // ClassName
-    newDeleteBtn.className =
-      "fa-solid fa-xmark delete-btn rounded-md px-[10px] py-[10px] bg-[red] text-[white]";
-    newCheckBox.className = "checkbox-btn w-[30px] h-[30px] mr-[1rem]";
-    newDiv.className = "flex flex-row-reverse";
-    newLi.className =
-      "flex bg-[white] items-center px-[15px] py-[10px] mt-[10px] text-[black] rounded-md justify-between";
-    newP.className = "text-[20px]";
+  const inputValue = elInput.value;
 
-    document.querySelector(".all").textContent = `All(${todos.length})`;
+  if (inputValue) {
+    const todoObj = {
+      title: inputValue,
+      id: todoArr.length,
+      isCompleted: false,
+    };
+    todoArr.push(todoObj);
+  } else {
+    elStatusInput.innerHTML = "iltimos To'ldiring";
+    elStatusInput.classList.add("text-[red]", "text-[12px]");
+  }
 
-    // DataSet
-    newDeleteBtn.dataset.deleteBtnId = todo.id;
-    newCheckBox.dataset.checkboxBtnId = todo.id;
-
-    if (todo.isCompleted) {
-      newCheckBox.checked = true;
-      newP.classList.add("text-[gray]", "line-through");
+  elInput.addEventListener("input", () => {
+    if (elInput.value !== "") {
+      elStatusInput.innerHTML = "";
+      elStatusInput.classList.remove("text-[red]", "text-[12opx]");
     }
-
-    // Appends
-    htmlElement.appendChild(newLi);
-    newLi.append(newDiv, newDeleteBtn);
-    newDiv.append(newP, newCheckBox);
   });
-}
-
-elForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const inputValue = elInput.value.trim();
-
-  if (!inputValue) return;
-
-  const newTodoObj = {
-    id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 0,
-    title: inputValue,
-    isCompleted: false,
-  };
-
-  todos.push(newTodoObj);
 
   elInput.value = "";
-  renderTodos(todos, elList);
-  saveToLocalStorage(todos);
+  renderTodos(todoArr, elList);
 });
 
-// Save to local storage
-function saveToLocalStorage(todos) {
-  localStorage.setItem("todos", JSON.stringify(todos));
-}
+const renderTodos = (arr, htmlElement) => {
+  htmlElement.innerHTML = ""; // Clearing the list before rendering
 
-// Load from local storage
-function loadFromLocalStorage() {
-  const savedTodos = localStorage.getItem("todos");
-  if (savedTodos) {
-    return JSON.parse(savedTodos);
-  }
-  return [];
-}
+  arr.forEach((todo) => {
+    const newLi = document.createElement("li");
+    const newDeleteBtn = document.createElement("button");
+    const newCheckBtn = document.createElement("input");
 
-// Event delegation
-elList.addEventListener("click", (e) => {
-  const deleteBtnId = e.target.dataset.deleteBtnId * 1;
-  const foundTodoIndex = todos.findIndex((todo) => todo.id === deleteBtnId);
+    newLi.innerHTML = todo.title;
+    newDeleteBtn.innerHTML = "Delete";
 
-  if (e.target.matches(".delete-btn")) {
-    todos.splice(foundTodoIndex, 1);
-    renderTodos(todos, elList);
-    saveToLocalStorage(todos);
-  } else if (e.target.matches(".checkbox-btn")) {
-    const checkboxBtnId = e.target.dataset.checkboxBtnId * 1;
-    const foundTodo = todos.find((todo) => todo.id === checkboxBtnId);
-    foundTodo.isCompleted = !foundTodo.isCompleted;
+    newCheckBtn.type = "checkbox";
 
-    updateArrays(todos);
+    // Datasets
+    newDeleteBtn.classList.add("delete-btn");
+    newDeleteBtn.dataset.deleteBtnId = todo.id; // Fixed dataset assignment
 
-    renderTodos(todos, elList);
-    saveToLocalStorage(todos);
-  }
+    htmlElement.appendChild(newLi);
+    newLi.append(newCheckBtn, newDeleteBtn);
+  });
+};
 
-  elCompletedText.textContent = `Completed(${completed.length})`;
-  elUncompletedText.textContent = `Uncompleted(${uncompleted.length})`;
-});
-
-function updateArrays(todos) {
-  completed = todos.filter((todo) => todo.isCompleted === true);
-  uncompleted = todos.filter((todo) => todo.isCompleted === false);
-
-  console.log(completed);
-  console.log(uncompleted);
-  console.log(todos);
-
-  updateArrays.push(completed);
-  console.log(completed);
-}
-
-todos.push(...loadFromLocalStorage());
-renderTodos(todos, elList);
-
-function openCity(evt, cityName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
+renderTodos(todoArr, elList);

@@ -4,79 +4,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo App</title>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <title>Todo | Button Controller</title>
 </head>
-<style>
-  .tab {
-    overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    color: black;
-  }
 
-  .tab button {
-    background-color: inherit;
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-    font-size: 17px;
-  }
+<body>
 
-  .tab button:hover {
-    background-color: #ddd;
-  }
-
-  .tab button.active {
-    background-color: #ccc;
-  }
-
-  .tabcontent {
-    display: none;
-    padding: 6px 12px;
-  }
-</style>
-
-<body class="bg-[#35374B] text-[white] flex items-center justify-center h-[100vh] w-[100%]">
 
   <main>
     <section>
-      <div class="border-2 p-5 rounded-md">
-        <form action="" class="form gap-[1rem] flex w-[30rem]">
-          <div class="w-[100%]">
-            <input type="text" class="input w-[100%] rounded-md text-[black] px-[1rem] py-[.5rem]"
-              placeholder="Type something..." required>
-          </div>
-          <button class="w-[4rem] bg-[white] text-[black] rounded-md">Add</button>
-        </form>
-        <div class="tab my-[1rem] rounded-md">
-          <button class="tablinks all" onclick="openCity(event, 'All')">All(0)</button>
-          <button class="tablinks completed" onclick="openCity(event, 'Completed')">Completed(0)</button>
-          <button class="tablinks uncompleted" onclick="openCity(event, 'Uncompleted')">Uncompleted(0)</button>
-          <button class="tablinks" onclick="openCity(event, 'Trash')"><i class="fa-solid fa-trash">Trash</i></button>
+      <form action="" class="form flex items-center">
+        <div class="flex flex-col">
+          <input type="text" class="input" placeholder="Typing...">
+          <p class="statusInput"></p>
         </div>
+        <button>Add</button>
+      </form>
 
-        <div id="All" class="block tabcontent">
-          <ul class="todos-list h-[10rem] border-t-2 overflow-scroll">
-          </ul>
-        </div>
-
-        <div id="Completed" class="compeled-section tabcontent">
-        </div>
-
-        <div id="Uncompleted" class="tabcontent">
-        </div>
-
-        <div id="Trash" class="tabcontent">
-        </div>
-
-      </div>
+      <ul class="list"></ul>
+      <button>All <span class="all"></span></button>
+      <button>Completed <span class="completed"></span></button>
+      <button>Uncompleted <span class="uncompleted"></span></button>
     </section>
   </main>
+
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/index.js"></script>
