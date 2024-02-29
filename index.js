@@ -1,21 +1,21 @@
 "use strict";
 
-// Variables
+// Elements
 const elForm = document.querySelector(".form");
 const elInput = document.querySelector(".input");
 const elList = document.querySelector(".todos-list");
-const elCompleted = document.querySelector("#Completed");
+const elCompletedBtn = document.querySelector("#Completed");
 const elUncompleted = document.querySelector("#Uncompleted");
 const elCompletedText = document.querySelector(".completed");
 const elUncompletedText = document.querySelector(".uncompleted");
 
 // Arrays
-const todos = [];
-const completed = [];
-const uncompleted = [];
+let todos = [];
+let completed = [];
+let uncompleted = [];
 
 // Functions
-const renderTodos = function (arr, htmlElement) {
+function renderTodos(arr, htmlElement) {
   htmlElement.innerHTML = "";
   arr.forEach((todo) => {
     const newLi = document.createElement("li");
@@ -52,7 +52,7 @@ const renderTodos = function (arr, htmlElement) {
     newLi.append(newDiv, newDeleteBtn);
     newDiv.append(newP, newCheckBox);
   });
-};
+}
 
 elForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -88,7 +88,7 @@ function loadFromLocalStorage() {
   return [];
 }
 
-// DOM
+// Event delegation
 elList.addEventListener("click", (e) => {
   const deleteBtnId = e.target.dataset.deleteBtnId * 1;
   const foundTodoIndex = todos.findIndex((todo) => todo.id === deleteBtnId);
@@ -102,29 +102,26 @@ elList.addEventListener("click", (e) => {
     const foundTodo = todos.find((todo) => todo.id === checkboxBtnId);
     foundTodo.isCompleted = !foundTodo.isCompleted;
 
-    updateCompletedAndUncompletedArrays(todos);
+    updateArrays(todos);
 
     renderTodos(todos, elList);
     saveToLocalStorage(todos);
   }
+
+  elCompletedText.textContent = `Completed(${completed.length})`;
+  elUncompletedText.textContent = `Uncompleted(${uncompleted.length})`;
 });
 
-function updateCompletedAndUncompletedArrays(todos) {
-  completed.length = 0;
-  uncompleted.length = 0;
+function updateArrays(todos) {
+  completed = todos.filter((todo) => todo.isCompleted === true);
+  uncompleted = todos.filter((todo) => todo.isCompleted === false);
 
-  todos.forEach((todo) => {
-    if (todo.isCompleted === true) {
-      completed.push(todo.title);
-    } else if (todo.isCompleted === false) {
-      uncompleted.push(todo.title);
-    }
+  console.log(completed);
+  console.log(uncompleted);
+  console.log(todos);
 
-    elCompletedText.textContent = `Completed(${completed.length})`;
-    elUncompletedText.textContent = `Uncompleted(${uncompleted.length})`;
-  });
-  elCompleted.innerHTML = completed.join("<br>");
-  elUncompleted.innerHTML = uncompleted.join("<br>");
+  updateArrays.push(completed);
+  console.log(completed);
 }
 
 todos.push(...loadFromLocalStorage());
