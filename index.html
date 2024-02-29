@@ -53,22 +53,23 @@
           </div>
           <button class="w-[4rem] bg-[white] text-[black] rounded-md">Add</button>
         </form>
-        <div class="tab my-[1rem]">
-          <button class="tablinks" onclick="openCity(event, 'All')">All</button>
-          <button class="tablinks" onclick="openCity(event, 'Completed')">Completed</button>
-          <button class="tablinks" onclick="openCity(event, 'Uncompleted')">Uncompleted</button>
+        <div class="tab my-[1rem] rounded-md">
+          <button class="tablinks all" onclick="openCity(event, 'All')">All(0)</button>
+          <button class="tablinks completed" onclick="openCity(event, 'Completed')">Completed(0)</button>
+          <button class="tablinks uncompleted" onclick="openCity(event, 'Uncompleted')">Uncompleted(0)</button>
         </div>
 
         <div id="All" class="block tabcontent">
-          <ul class="todos-list h-[10rem] border-t-2 overflow-scroll"></ul>
+          <ul class="todos-list h-[10rem] border-t-2 overflow-scroll">
+          </ul>
         </div>
 
         <div id="Completed" class="compeled-section tabcontent">
-          <p>completed</p>
+          <p>Not yet...</p>
         </div>
 
         <div id="Uncompleted" class="tabcontent">
-          <p>uncompleted</p>
+          <p>Not yet...</p>
         </div>
       </div>
     </section>

@@ -6,6 +6,8 @@ const elInput = document.querySelector(".input");
 const elList = document.querySelector(".todos-list");
 const elCompleted = document.querySelector("#Completed");
 const elUncompleted = document.querySelector("#Uncompleted");
+const elCompletedText = document.querySelector(".completed");
+const elUncompletedText = document.querySelector(".uncompleted");
 
 // Arrays
 const todos = [];
@@ -23,7 +25,7 @@ const renderTodos = function (arr, htmlElement) {
     const newDeleteBtn = document.createElement("button");
 
     newCheckBox.type = "checkbox";
-    newP.textContent = todo.title; 
+    newP.textContent = todo.title;
 
     // ClassName
     newDeleteBtn.className =
@@ -33,6 +35,8 @@ const renderTodos = function (arr, htmlElement) {
     newLi.className =
       "flex bg-[white] items-center px-[15px] py-[10px] mt-[10px] text-[black] rounded-md justify-between";
     newP.className = "text-[20px]";
+
+    document.querySelector(".all").textContent = `All(${todos.length})`;
 
     // DataSet
     newDeleteBtn.dataset.deleteBtnId = todo.id;
@@ -101,7 +105,7 @@ elList.addEventListener("click", (e) => {
     updateCompletedAndUncompletedArrays(todos);
 
     renderTodos(todos, elList);
-    saveToLocalStorage(todos); 
+    saveToLocalStorage(todos);
   }
 });
 
@@ -110,18 +114,19 @@ function updateCompletedAndUncompletedArrays(todos) {
   uncompleted.length = 0;
 
   todos.forEach((todo) => {
-    if (todo.isCompleted) {
+    if (todo.isCompleted === true) {
       completed.push(todo.title);
-    } else {
-      uncompleted.push(todo.title); 
+    } else if (todo.isCompleted === false) {
+      uncompleted.push(todo.title);
     }
-  });
 
-  elCompleted.innerHTML = completed;
-  elUncompleted.innerHTML = uncompleted;
+    elCompletedText.textContent = `Completed(${completed.length})`;
+    elUncompletedText.textContent = `Uncompleted(${uncompleted.length})`;
+  });
+  elCompleted.innerHTML = completed.join("<br>");
+  elUncompleted.innerHTML = uncompleted.join("<br>");
 }
 
-// Initial rendering and loading from local storage
 todos.push(...loadFromLocalStorage());
 renderTodos(todos, elList);
 
