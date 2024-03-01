@@ -18,21 +18,18 @@ let trashArr = [];
 
 elCompletedBtn.addEventListener("click", () => {
   elList.innerHTML = null;
-
   renderTodos(completedTodoArr, elList);
   updateCounts();
 });
 
 elAllBtn.addEventListener("click", () => {
   elList.innerHTML = null;
-
   renderTodos(todoArr, elList);
   updateCounts();
 });
 
-elUncompletedBtn.addEventListener("click", (e) => {
+elUncompletedBtn.addEventListener("click", () => {
   elList.innerHTML = null;
-
   const uncompletedTodos = todoArr.filter((todo) => !todo.isCompleted);
   renderTodos(uncompletedTodos, elList);
   updateCounts();
@@ -109,18 +106,18 @@ const renderTodos = (arr, htmlElement) => {
 
     newLi.setAttribute(
       "class",
-      "bg-[#F6F6F6] border rounded-md m-[1rem] flex items-center justify-between py-[10px] text-[1.3rem] px-[10px]"
+      "item bg-[#F6F6F6] border rounded-md m-[1rem] flex items-center justify-between py-[10px] text-[1.3rem] px-[10px]"
     );
 
     newDeleteBtn.setAttribute(
       "class",
-      "bg-[#ea2f2f] text-[white] border rounded-md px-[10px] py-[5px]"
+      "bg-[#ea2f2f] text-[white] border rounded-md px-[10px] py-[5px] delete-btn"
     );
 
     newLiDiv.setAttribute("class", "flex items-center gap-[.5rem]");
+    newLi.setAttribute("draggable", "true");
 
     // Datasets
-    newDeleteBtn.classList.add("delete-btn");
     newDeleteBtn.dataset.deleteBtnId = todo.id;
     newCheckBtn.dataset.checkBtnId = todo.id;
 
@@ -140,3 +137,42 @@ const updateCounts = () => {
 
 renderTodos(todoArr, elList);
 updateCounts();
+
+elList.addEventListener('dragover', (e) => {
+  e.preventDefault();
+});
+
+let draggedItem = null;
+
+elList.addEventListener('dragstart', (e) => {
+  draggedItem = e.target.closest('.item');
+  setTimeout(() => {
+    draggedItem.classList.add('dragging');
+  }, 0);
+});
+
+elList.addEventListener('dragend', () => {
+  draggedItem.classList.remove('dragging');
+});
+
+elList.addEventListener('drop', (e) => {
+  const afterElement = getDragAfterElement(elList, e.clientY);
+  if (afterElement == null) {
+    elList.appendChild(draggedItem);
+  } else {
+    elList.insertBefore(draggedItem, afterElement);
+  }
+});
+
+function getDragAfterElement(container, y) {
+  const draggableElements = [...container.querySelectorAll('.item:not(.dragging)')];
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
