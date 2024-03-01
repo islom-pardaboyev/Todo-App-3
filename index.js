@@ -16,6 +16,75 @@ let todoArr = [];
 let completedTodoArr = [];
 let trashArr = [];
 
+// Function to update counts
+const updateCounts = () => {
+  elTodosAll.textContent = `(${todoArr.length})`;
+  elCompletedTotal.textContent = `(${completedTodoArr.length})`;
+  elUncompletedTotal.textContent = `(${
+    todoArr.filter((todo) => !todo.isCompleted).length
+  })`;
+};
+
+// Render todos
+const renderTodos = (arr, htmlElement) => {
+  htmlElement.innerHTML = "";
+
+  arr.forEach((todo) => {
+    const newLi = document.createElement("li");
+    const newPTitle = document.createElement("p");
+    const newLiDiv = document.createElement("div");
+    const newDeleteBtn = document.createElement("button");
+    const newCheckBtn = document.createElement("input");
+
+    newPTitle.textContent = todo.title;
+    newDeleteBtn.textContent = "Delete";
+    newCheckBtn.classList.add("checkbox-btn");
+    newCheckBtn.type = "checkbox";
+
+    if (todo.isCompleted) {
+      newCheckBtn.checked = true;
+      newPTitle.classList.add("line-through", "text-gray");
+    }
+
+    newLi.setAttribute(
+      "class",
+      "item bg-gray-200 border rounded-md m-4 flex items-center justify-between py-2 text-lg px-4"
+    );
+
+    newDeleteBtn.setAttribute(
+      "class",
+      "bg-red-500 text-white border rounded-md px-4 py-2 delete-btn"
+    );
+
+    newLiDiv.setAttribute("class", "flex items-center gap-2");
+    newLi.setAttribute("draggable", "true");
+
+    // Datasets
+    newDeleteBtn.dataset.deleteBtnId = todo.id;
+    newCheckBtn.dataset.checkBtnId = todo.id;
+
+    htmlElement.appendChild(newLi);
+    newLi.append(newLiDiv, newDeleteBtn);
+    newLiDiv.append(newPTitle, newCheckBtn);
+  });
+};
+
+// Load data from local storage
+function loadFromLocalStorage() {
+  const todoArrString = localStorage.getItem('todoArr');
+  const completedTodoArrString = localStorage.getItem('completedTodoArr');
+
+  if (todoArrString) todoArr = JSON.parse(todoArrString);
+  if (completedTodoArrString) completedTodoArr = JSON.parse(completedTodoArrString);
+}
+
+// Save data to local storage
+function saveToLocalStorage() {
+  localStorage.setItem('todoArr', JSON.stringify(todoArr));
+  localStorage.setItem('completedTodoArr', JSON.stringify(completedTodoArr));
+}
+
+// Event listeners
 elCompletedBtn.addEventListener("click", () => {
   elList.innerHTML = null;
   renderTodos(completedTodoArr, elList);
@@ -42,15 +111,11 @@ elList.addEventListener("click", (evt) => {
   if (evt.target.matches(".delete-btn")) {
     const foundTodoIndex = todoArr.findIndex((todo) => todo.id === deleteBtnId);
     todoArr.splice(foundTodoIndex, 1);
+    saveToLocalStorage();
   } else if (evt.target.matches(".checkbox-btn")) {
     const foundTodo = todoArr.find((todo) => todo.id === checkBtnId);
     foundTodo.isCompleted = !foundTodo.isCompleted;
-    if (foundTodo.isCompleted) {
-      completedTodoArr.push(foundTodo);
-    } else {
-      const index = completedTodoArr.indexOf(foundTodo);
-      completedTodoArr.splice(index, 1);
-    }
+    saveToLocalStorage();
   }
 
   renderTodos(todoArr, elList);
@@ -71,108 +136,21 @@ elForm.addEventListener("submit", (evt) => {
     elInput.value = "";
     renderTodos(todoArr, elList);
     updateCounts();
+    saveToLocalStorage();
   } else {
     elStatusInput.textContent = "Inputni to'ldiring";
-    elStatusInput.classList.add("text-[red]", "text-[12px]");
+    elStatusInput.classList.add("text-red-500", "text-sm");
   }
 });
 
 elInput.addEventListener("input", () => {
   if (elInput.value.trim() !== "") {
     elStatusInput.textContent = "";
-    elStatusInput.classList.remove("text-red", "text-12");
+    elStatusInput.classList.remove("text-red-500", "text-sm");
   }
 });
 
-const renderTodos = (arr, htmlElement) => {
-  htmlElement.innerHTML = "";
-
-  arr.forEach((todo) => {
-    const newLi = document.createElement("li");
-    const newPTitle = document.createElement("p");
-    const newLiDiv = document.createElement("div");
-    const newDeleteBtn = document.createElement("button");
-    const newCheckBtn = document.createElement("input");
-
-    newPTitle.textContent = todo.title;
-    newDeleteBtn.textContent = "Delete";
-    newCheckBtn.classList.add("checkbox-btn");
-    newCheckBtn.type = "checkbox";
-
-    if (todo.isCompleted) {
-      newCheckBtn.checked = true;
-      newPTitle.classList.add("line-through", "text-[gray]");
-    }
-
-    newLi.setAttribute(
-      "class",
-      "item bg-[#F6F6F6] border rounded-md m-[1rem] flex items-center justify-between py-[10px] text-[1.3rem] px-[10px]"
-    );
-
-    newDeleteBtn.setAttribute(
-      "class",
-      "bg-[#ea2f2f] text-[white] border rounded-md px-[10px] py-[5px] delete-btn"
-    );
-
-    newLiDiv.setAttribute("class", "flex items-center gap-[.5rem]");
-    newLi.setAttribute("draggable", "true");
-
-    // Datasets
-    newDeleteBtn.dataset.deleteBtnId = todo.id;
-    newCheckBtn.dataset.checkBtnId = todo.id;
-
-    htmlElement.appendChild(newLi);
-    newLi.append(newLiDiv, newDeleteBtn);
-    newLiDiv.append(newPTitle, newCheckBtn);
-  });
-};
-
-const updateCounts = () => {
-  elTodosAll.textContent = `(${todoArr.length})`;
-  elCompletedTotal.textContent = `(${completedTodoArr.length})`;
-  elUncompletedTotal.textContent = `(${
-    todoArr.filter((todo) => !todo.isCompleted).length
-  })`;
-};
-
+// Load data from local storage when the page loads
+loadFromLocalStorage();
 renderTodos(todoArr, elList);
 updateCounts();
-
-elList.addEventListener('dragover', (e) => {
-  e.preventDefault();
-});
-
-let draggedItem = null;
-
-elList.addEventListener('dragstart', (e) => {
-  draggedItem = e.target.closest('.item');
-  setTimeout(() => {
-    draggedItem.classList.add('dragging');
-  }, 0);
-});
-
-elList.addEventListener('dragend', () => {
-  draggedItem.classList.remove('dragging');
-});
-
-elList.addEventListener('drop', (e) => {
-  const afterElement = getDragAfterElement(elList, e.clientY);
-  if (afterElement == null) {
-    elList.appendChild(draggedItem);
-  } else {
-    elList.insertBefore(draggedItem, afterElement);
-  }
-});
-
-function getDragAfterElement(container, y) {
-  const draggableElements = [...container.querySelectorAll('.item:not(.dragging)')];
-  return draggableElements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-    if (offset < 0 && offset > closest.offset) {
-      return { offset: offset, element: child };
-    } else {
-      return closest;
-    }
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
