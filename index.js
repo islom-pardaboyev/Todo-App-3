@@ -14,17 +14,20 @@ const elUncompletedBtn = document.querySelector(".uncompletedbtn");
 // Arrays
 let todoArr = [];
 let completedTodoArr = [];
+let trashArr = [];
 
 elCompletedBtn.addEventListener("click", () => {
   elList.innerHTML = null;
 
   renderTodos(completedTodoArr, elList);
+  updateCounts();
 });
 
 elAllBtn.addEventListener("click", () => {
   elList.innerHTML = null;
 
   renderTodos(todoArr, elList);
+  updateCounts();
 });
 
 elUncompletedBtn.addEventListener("click", (e) => {
@@ -32,6 +35,7 @@ elUncompletedBtn.addEventListener("click", (e) => {
 
   const uncompletedTodos = todoArr.filter((todo) => !todo.isCompleted);
   renderTodos(uncompletedTodos, elList);
+  updateCounts();
 });
 
 elList.addEventListener("click", (evt) => {
@@ -40,7 +44,8 @@ elList.addEventListener("click", (evt) => {
 
   if (evt.target.matches(".delete-btn")) {
     const foundTodoIndex = todoArr.findIndex((todo) => todo.id === deleteBtnId);
-    todoArr.splice(foundTodoIndex, 1);
+    trashArr.push(foundTodoIndex);
+    console.log(trashArr);
   } else if (evt.target.matches(".checkbox-btn")) {
     const foundTodo = todoArr.find((todo) => todo.id === checkBtnId);
     foundTodo.isCompleted = !foundTodo.isCompleted;
@@ -71,8 +76,8 @@ elForm.addEventListener("submit", (evt) => {
     renderTodos(todoArr, elList);
     updateCounts();
   } else {
-    elStatusInput.textContent = "Please fill out this field";
-    elStatusInput.classList.add("text-red", "text-12");
+    elStatusInput.textContent = "Inputni to'ldiring";
+    elStatusInput.classList.add("text-[red]", "text-[12px]");
   }
 });
 
@@ -88,18 +93,32 @@ const renderTodos = (arr, htmlElement) => {
 
   arr.forEach((todo) => {
     const newLi = document.createElement("li");
+    const newPTitle = document.createElement("p");
+    const newLiDiv = document.createElement("div");
     const newDeleteBtn = document.createElement("button");
     const newCheckBtn = document.createElement("input");
 
-    newLi.textContent = todo.title;
+    newPTitle.textContent = todo.title;
     newDeleteBtn.textContent = "Delete";
     newCheckBtn.classList.add("checkbox-btn");
     newCheckBtn.type = "checkbox";
 
     if (todo.isCompleted) {
       newCheckBtn.checked = true;
-      newLi.classList.add("line-through");
+      newPTitle.classList.add("line-through", "text-[gray]");
     }
+
+    newLi.setAttribute(
+      "class",
+      "bg-[#F6F6F6] border rounded-md m-[1rem] flex items-center justify-between py-[10px] text-[1.3rem] px-[10px]"
+    );
+
+    newDeleteBtn.setAttribute(
+      "class",
+      "bg-[#ea2f2f] text-[white] border rounded-md px-[10px] py-[5px]"
+    );
+
+    newLiDiv.setAttribute("class", "flex items-center gap-[.5rem]");
 
     // Datasets
     newDeleteBtn.classList.add("delete-btn");
@@ -107,7 +126,8 @@ const renderTodos = (arr, htmlElement) => {
     newCheckBtn.dataset.checkBtnId = todo.id;
 
     htmlElement.appendChild(newLi);
-    newLi.append(newCheckBtn, newDeleteBtn);
+    newLi.append(newLiDiv, newDeleteBtn);
+    newLiDiv.append(newPTitle, newCheckBtn);
   });
 };
 

@@ -5,25 +5,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todo | Button Controller</title>
+  <!-- Box Icons -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
-<body>
+<style>
+  :root {
+    --color: #ea2f2f;
+  }
+
+  input.checkbox-btn {
+    width: 25px;
+    height: 25px;
+  }
+</style>
+
+<body class="px-[2rem] bg-[#F7EFE5] flex items-center h-[100vh] justify-center">
 
 
   <main>
-    <section>
-      <form action="" class="form flex items-center">
-        <div class="flex flex-col">
-          <input type="text" class="input" placeholder="Typing...">
-          <p class="statusInput"></p>
-        </div>
-        <button>Add</button>
+    <section class="bg-[white] h-[30rem] border-2 rounded-md px-[2rem]">
+      <form action="" class="form flex justify-between pb-[1rem] pt-[2rem] gap-[.5rem] items-center">
+        <input type="text" class="border-2 text-[1.3rem] w-full px-[10px] py-[5px] rounded-md border-[black] input"
+          placeholder="Typing...">
+        <button class="bg-[#7BD3EA] px-[10px] flex items-center py-[7px] rounded-md"><i
+            class='bx bx-plus text-[white] font-bold text-[1.7rem]'></i></button>
       </form>
 
-      <ul class="list"></ul>
-      <button class="allbtn">All <span class="all"></span></button>
-      <button class="completedbtn">Completed <span class="completed"></span></button>
-      <button class="uncompletedbtn">Uncompleted <span class="uncompleted"></span></button>
+      <p class="statusInput"></p>
+
+      <div class="flex gap-[1.5rem] justify-between text-[1.3rem] text-[white]">
+        <button class="allbtn rounded-md px-[25px] py-[10px] bg-[#59B4C3]">All <span class="all"></span></button>
+        <button class="completedbtn rounded-md px-[25px] py-[10px] bg-[#9BCF53]">Completed <span
+            class="completed"></span></button>
+        <button class="uncompletedbtn rounded-md px-[25px] py-[10px] bg-[#FF004D]">Uncompleted <span
+            class="uncompleted"></span></button>
+        <button class="trashbtn rounded-md px-[25px] py-[10px] bg-[#F60C86]"><span class="trash"></span><i
+            class='bx bxs-trash-alt'></i></button>
+      </div>
+
+      <ul class="list h-[17rem] border-y my-[1rem] overflow-auto"></ul>
     </section>
   </main>
 
