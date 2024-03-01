@@ -19,16 +19,15 @@
     height: 25px;
   }
 
-  .item.dragging:where(.details, i){
+  .item.dragging:where(.details, i) {
     opacity: 0;
-}
-
+  }
 </style>
 
 <body class="px-[2rem] bg-[#F7EFE5] flex items-center h-[100vh] justify-center">
 
 
-  <main>
+  <main class="">
     <section class="bg-[white] h-[30rem] border-2 rounded-md px-[2rem]">
       <form action="" class="form flex justify-between pb-[1rem] pt-[2rem] gap-[.5rem] items-center">
         <input type="text" class="border-2 text-[1.3rem] w-full px-[10px] py-[5px] rounded-md border-[black] input"
@@ -45,14 +44,23 @@
             class="completed"></span></button>
         <button class="uncompletedbtn rounded-md px-[25px] py-[10px] bg-[#FF004D]">Uncompleted <span
             class="uncompleted"></span></button>
-        <button class="trashbtn rounded-md px-[25px] py-[10px] bg-[#F60C86]"><span class="trash"></span><i
-            class='bx bxs-trash-alt'></i></button>
+        <button class="trashbtn rounded-md px-[25px] py-[10px] bg-[#F60C86] trashbtn"><i class='bx bxs-trash-alt'></i>
+          <span class="trash"></span></button>
       </div>
 
       <ul class="list h-[17rem] border-y my-[1rem] overflow-auto"></ul>
     </section>
   </main>
 
+  <div class="modal bg-[#F5F5F5] invisible px-[20px] py-[10px] rounded-lg text-center absolute">
+    <i class='text-[red] text-[4rem] bx bxs-error-circle'></i>
+    <p class="font-bold text-[3rem]">Diqqat</p>
+    <p class="text-[1.5rem]">Sadulloxon, rostan ham buni o'chirmoqchimisiz</p>
+    <div class="flex items-center px-[5rem] mt-[1rem] justify-between text-[white]">
+      <button class="bg-[#74E291] text-[2rem] px-[40px] py-[10px] rounded-md">Ha</button>
+      <button class="bg-[#FF004D] text-[2rem] px-[40px] py-[10px] rounded-md">Yo'q</button>
+    </div>
+  </div>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/index.js"></script>

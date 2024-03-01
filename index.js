@@ -10,6 +10,8 @@ const elUncompletedTotal = document.querySelector(".uncompleted");
 const elCompletedBtn = document.querySelector(".completedbtn");
 const elAllBtn = document.querySelector(".allbtn");
 const elUncompletedBtn = document.querySelector(".uncompletedbtn");
+const elTrashBtn = document.querySelector(".trashbtn");
+const elTrashTotal = document.querySelector(".trash");
 
 // Arrays
 let todoArr = [];
@@ -23,6 +25,7 @@ const updateCounts = () => {
   elUncompletedTotal.textContent = `(${
     todoArr.filter((todo) => !todo.isCompleted).length
   })`;
+  elTrashTotal.textContent = `(${trashArr.length})`;
 };
 
 // Render todos
@@ -71,17 +74,20 @@ const renderTodos = (arr, htmlElement) => {
 
 // Load data from local storage
 function loadFromLocalStorage() {
-  const todoArrString = localStorage.getItem('todoArr');
-  const completedTodoArrString = localStorage.getItem('completedTodoArr');
+  const todoArrString = localStorage.getItem("todoArr");
+  const completedTodoArrString = localStorage.getItem("completedTodoArr");
+  const trashArrString = localStorage.getItem("trashArr");
 
   if (todoArrString) todoArr = JSON.parse(todoArrString);
   if (completedTodoArrString) completedTodoArr = JSON.parse(completedTodoArrString);
+  if (trashArrString) trashArr = JSON.parse(trashArrString);
 }
 
 // Save data to local storage
 function saveToLocalStorage() {
-  localStorage.setItem('todoArr', JSON.stringify(todoArr));
-  localStorage.setItem('completedTodoArr', JSON.stringify(completedTodoArr));
+  localStorage.setItem("todoArr", JSON.stringify(todoArr));
+  localStorage.setItem("completedTodoArr", JSON.stringify(completedTodoArr));
+  localStorage.setItem("trashArr", JSON.stringify(trashArr));
 }
 
 // Event listeners
@@ -104,23 +110,46 @@ elUncompletedBtn.addEventListener("click", () => {
   updateCounts();
 });
 
+elTrashBtn.addEventListener("click", () => {
+  elList.innerHTML = null;
+  renderTodos(trashArr, elList);
+  updateCounts();
+});
+
 elList.addEventListener("click", (evt) => {
   const deleteBtnId = +evt.target.dataset.deleteBtnId;
   const checkBtnId = +evt.target.dataset.checkBtnId;
 
   if (evt.target.matches(".delete-btn")) {
     const foundTodoIndex = todoArr.findIndex((todo) => todo.id === deleteBtnId);
+    const foundTodo = todoArr[foundTodoIndex];
     todoArr.splice(foundTodoIndex, 1);
+    trashArr.push(foundTodo);
+    updateCounts();
     saveToLocalStorage();
   } else if (evt.target.matches(".checkbox-btn")) {
-    const foundTodo = todoArr.find((todo) => todo.id === checkBtnId);
+    const foundTodoIndex = todoArr.findIndex((todo) => todo.id === checkBtnId);
+    const foundTodo = todoArr[foundTodoIndex];
     foundTodo.isCompleted = !foundTodo.isCompleted;
+    if (foundTodo.isCompleted) {
+      const index = completedTodoArr.findIndex((todo) => todo.id === foundTodo.id);
+      if (index === -1) {
+        completedTodoArr.push(foundTodo);
+      }
+    } else {
+      const index = completedTodoArr.findIndex((todo) => todo.id === foundTodo.id);
+      if (index !== -1) {
+        completedTodoArr.splice(index, 1);
+      }
+    }
+    // Update counts
+    updateCounts();
     saveToLocalStorage();
   }
 
   renderTodos(todoArr, elList);
-  updateCounts();
 });
+
 
 elForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
@@ -129,7 +158,7 @@ elForm.addEventListener("submit", (evt) => {
   if (inputValue) {
     const todoObj = {
       title: inputValue,
-      id: todoArr.length,
+      id: Date.now(),
       isCompleted: false,
     };
     todoArr.push(todoObj);
@@ -150,7 +179,6 @@ elInput.addEventListener("input", () => {
   }
 });
 
-// Load data from local storage when the page loads
 loadFromLocalStorage();
 renderTodos(todoArr, elList);
 updateCounts();
