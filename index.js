@@ -44,8 +44,7 @@ elList.addEventListener("click", (evt) => {
 
   if (evt.target.matches(".delete-btn")) {
     const foundTodoIndex = todoArr.findIndex((todo) => todo.id === deleteBtnId);
-    trashArr.push(foundTodoIndex);
-    console.log(trashArr);
+    todoArr.splice(foundTodoIndex, 1);
   } else if (evt.target.matches(".checkbox-btn")) {
     const foundTodo = todoArr.find((todo) => todo.id === checkBtnId);
     foundTodo.isCompleted = !foundTodo.isCompleted;
