@@ -7,39 +7,57 @@ const elStatusInput = document.querySelector(".statusInput");
 const elTodosAll = document.querySelector(".all");
 const elCompletedTotal = document.querySelector(".completed");
 const elUncompletedTotal = document.querySelector(".uncompleted");
+const elCompletedBtn = document.querySelector(".completedbtn");
+const elAllBtn = document.querySelector(".allbtn");
+const elUncompletedBtn = document.querySelector(".uncompletedbtn");
 
 // Arrays
 let todoArr = [];
 let completedTodoArr = [];
 
+elCompletedBtn.addEventListener("click", () => {
+  elList.innerHTML = null;
+
+  renderTodos(completedTodoArr, elList);
+});
+
+elAllBtn.addEventListener("click", () => {
+  elList.innerHTML = null;
+
+  renderTodos(todoArr, elList);
+});
+
+elUncompletedBtn.addEventListener("click", (e) => {
+  elList.innerHTML = null;
+
+  const uncompletedTodos = todoArr.filter((todo) => !todo.isCompleted);
+  renderTodos(uncompletedTodos, elList);
+});
+
 elList.addEventListener("click", (evt) => {
-  const deleteBtnId = evt.target.dataset.deleteBtnId * 1;
-  const foundTodoIndex = todoArr.findIndex((todo) => todo.id === deleteBtnId);
-  const checkBtnId = evt.target.dataset.checkBtnId * 1;
-  const foundTodoChecked = todoArr.find((todo) => todo.id === checkBtnId);
+  const deleteBtnId = +evt.target.dataset.deleteBtnId;
+  const checkBtnId = +evt.target.dataset.checkBtnId;
+
   if (evt.target.matches(".delete-btn")) {
+    const foundTodoIndex = todoArr.findIndex((todo) => todo.id === deleteBtnId);
     todoArr.splice(foundTodoIndex, 1);
-    elList.innerHTML = null;
-    renderTodos(todoArr, elList);
-    updateCounts();
   } else if (evt.target.matches(".checkbox-btn")) {
-    foundTodoChecked.isCompleted = !foundTodoChecked.isCompleted;
-    elList.innerHTML = null;
-
-    if (foundTodoChecked.isCompleted) {
-      completedTodoArr.push(foundTodoChecked);
+    const foundTodo = todoArr.find((todo) => todo.id === checkBtnId);
+    foundTodo.isCompleted = !foundTodo.isCompleted;
+    if (foundTodo.isCompleted) {
+      completedTodoArr.push(foundTodo);
     } else {
-      completedTodoArr.splice(completedTodoArr.indexOf(foundTodoChecked), 1);
+      const index = completedTodoArr.indexOf(foundTodo);
+      completedTodoArr.splice(index, 1);
     }
-
-    renderTodos(todoArr, elList);
-    updateCounts();
   }
+
+  renderTodos(todoArr, elList);
+  updateCounts();
 });
 
 elForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
-
   const inputValue = elInput.value.trim();
 
   if (inputValue) {
@@ -48,7 +66,6 @@ elForm.addEventListener("submit", (evt) => {
       id: todoArr.length,
       isCompleted: false,
     };
-
     todoArr.push(todoObj);
     elInput.value = "";
     renderTodos(todoArr, elList);
@@ -77,7 +94,6 @@ const renderTodos = (arr, htmlElement) => {
     newLi.textContent = todo.title;
     newDeleteBtn.textContent = "Delete";
     newCheckBtn.classList.add("checkbox-btn");
-
     newCheckBtn.type = "checkbox";
 
     if (todo.isCompleted) {
@@ -98,7 +114,9 @@ const renderTodos = (arr, htmlElement) => {
 const updateCounts = () => {
   elTodosAll.textContent = `(${todoArr.length})`;
   elCompletedTotal.textContent = `(${completedTodoArr.length})`;
-  elUncompletedTotal.textContent = `(${todoArr.length - completedTodoArr.length})`;
+  elUncompletedTotal.textContent = `(${
+    todoArr.filter((todo) => !todo.isCompleted).length
+  })`;
 };
 
 renderTodos(todoArr, elList);
