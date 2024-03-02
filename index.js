@@ -79,7 +79,8 @@ function loadFromLocalStorage() {
   const trashArrString = localStorage.getItem("trashArr");
 
   if (todoArrString) todoArr = JSON.parse(todoArrString);
-  if (completedTodoArrString) completedTodoArr = JSON.parse(completedTodoArrString);
+  if (completedTodoArrString)
+    completedTodoArr = JSON.parse(completedTodoArrString);
   if (trashArrString) trashArr = JSON.parse(trashArrString);
 }
 
@@ -132,24 +133,27 @@ elList.addEventListener("click", (evt) => {
     const foundTodo = todoArr[foundTodoIndex];
     foundTodo.isCompleted = !foundTodo.isCompleted;
     if (foundTodo.isCompleted) {
-      const index = completedTodoArr.findIndex((todo) => todo.id === foundTodo.id);
+      const index = completedTodoArr.findIndex(
+        (todo) => todo.id === foundTodo.id
+      );
       if (index === -1) {
         completedTodoArr.push(foundTodo);
       }
     } else {
-      const index = completedTodoArr.findIndex((todo) => todo.id === foundTodo.id);
+      const index = completedTodoArr.findIndex(
+        (todo) => todo.id === foundTodo.id
+      );
       if (index !== -1) {
         completedTodoArr.splice(index, 1);
       }
     }
-    // Update counts
+    
     updateCounts();
     saveToLocalStorage();
   }
 
   renderTodos(todoArr, elList);
 });
-
 
 elForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
